@@ -1,0 +1,4 @@
+﻿  lab_lista.cpp
+C:\Users\piotr\Desktop\wsiiz\sem2\aisd_lab\6\lista\zadania_lista\lab_lista.cpp(64,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\piotr\Desktop\wsiiz\sem2\aisd_lab\6\lista\zadania_lista\lab_lista.cpp(145,10): warning C4101: 'znak': unreferenced local variable
+  zadania_lista.vcxproj -> C:\Users\piotr\Desktop\wsiiz\sem2\aisd_lab\6\lista\x64\Debug\zadania_lista.exe
