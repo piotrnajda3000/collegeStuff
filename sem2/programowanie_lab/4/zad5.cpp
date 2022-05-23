@@ -33,6 +33,4 @@ int main()
 	return 0; 
 }
 
-// na plusa zad 6 i 7 
-
 // https://www.programiz.com/cpp-programming/friend-function-class
