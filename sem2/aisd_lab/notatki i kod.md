@@ -306,5 +306,68 @@ deque::deque(int rozmiar) :
 {}
 ```
 
-## Lab 7 - Grafy, Djikstra 
+## Inne
 
+**Listy** - pamiec na wskazniki, brak random access - warto gdy czesto nowe dane, a rzadko odczytywane 
+
+### BFS 
+- O(V^2) w przypadku reprezentacji macierzowej
+- O(V + E) w przypadku reprezentacji listowej 
+
+
+### Merge lists i createSortedList
+
+```c++
+void createSortedList(list<int>& lista, int* tab, int n) {
+	for (int i = 0; i < n; i++) {
+		list<int>::iterator it = lista.begin();
+		// bool insert = false; 
+		while (it != lista.end()) {
+			if (tab[i] < *it) {
+				lista.insert(it, tab[i]);
+				// insert = true; 
+				break;
+			}
+			it++;
+		}
+		if (it == lista.end()) lista.push_back(tab[i]);
+		// if (!insert) lista.insert(it, tab[i]); // push back? 
+	}
+}
+
+void mergeLists(list<int>& l1, list<int>& l2, list<int>& l3) {
+	// Polacz obie listy ze soba 
+	list<int> joined; 
+	joined.insert(joined.end(), l1.begin(), l1.end());
+	joined.insert(joined.end(), l2.begin(), l2.end());
+	//  1, 2, 5, 12, 63, 534, 5, 16, 34, 141 
+
+	int m = l1.size() + 1; // wskazuje na drugie "5" 
+
+	list<int>::iterator mid = joined.begin();
+	advance(mid, (m - 1));
+
+	list<int>::iterator i = joined.begin(); 
+	list<int>::iterator j = joined.begin();
+	advance(j, (m - 1));
+
+	while (i != mid && j != joined.end()) {
+		if (*i < *j) {
+			l3.push_back(*i); 
+			i++; 
+		}
+		else {
+			l3.push_back(*j); 
+			j++; 
+		}
+	}
+	while (i != mid) {
+		l3.push_back(*i); 
+		i++; 
+	}
+	while (j != joined.end()) {
+		l3.push_back(*j);
+		j++;
+	}
+};
+```
