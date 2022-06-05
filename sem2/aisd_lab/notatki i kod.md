@@ -314,8 +314,19 @@ deque::deque(int rozmiar) :
 - O(V^2) w przypadku reprezentacji macierzowej
 - O(V + E) w przypadku reprezentacji listowej 
 
+### BST 
 
-### Merge lists i createSortedList
+Złożoność czasowa funkcji **insert()** jest rzędu **O(h)**, gdzie h jest wysokością drzewa. Wysokość drzewa, to jest
+odległość korzenia (w sensie liczby krawędzi) od najbardziej oddalonego liścia drzewa.
+
+#### Zlozonosc
+
+![[bst_zlozonosc.png]]
+
+O(n) dla search - np drzewo od 1 do 5 ciagle w prawo. 
+
+
+### Zad. Merge lists i createSortedList
 
 ```c++
 void createSortedList(list<int>& lista, int* tab, int n) {
@@ -371,3 +382,7 @@ void mergeLists(list<int>& l1, list<int>& l2, list<int>& l3) {
 	}
 };
 ```
+
+## Zlozonosci algorytmow wyszukiwania 
+
+![[zlozonosci.png]]
