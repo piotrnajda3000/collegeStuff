@@ -15,8 +15,8 @@ public class App extends JFrame {
     private JPanel PeopleView;
     private JPanel ProjectsView;
 
-    Projects projects = new Projects("projekty.csv");
-    People people = new People("ludzie.csv");
+    Projects projects = new Projects("projekty.csv", "projekty-total.csv");
+    People people = new People("ludzie.csv", "ludzie-total.csv");
 
     static final int preferredWidth = 585;
 
@@ -175,7 +175,7 @@ public class App extends JFrame {
 
         NewItemButton.addActionListener(e -> {
             try {
-                Person newItem = new Person(First.input.getText(), Last.input.getText());
+                Person newItem = new Person(people.totalCount.increment(), First.input.getText(), Last.input.getText());
                 people.PUT(newItem);
                 renderPeopleView();
             } catch (ValidationException ex) {
@@ -208,7 +208,7 @@ public class App extends JFrame {
 
         NewItemButton.addActionListener(e -> {
             try {
-                Project newItem = new Project(NazwaNew.input.getText(), OpisNew.input.getText());
+                Project newItem = new Project(projects.totalCount.increment(), NazwaNew.input.getText(), OpisNew.input.getText());
                 projects.PUT(newItem);
                 renderProjectsView();
             } catch (ValidationException ex) {

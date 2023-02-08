@@ -1,3 +1,7 @@
+import utils.FileUtils;
+import utils.TotalCount;
+import utils.validation.ValidationException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -10,24 +14,30 @@ public class People {
         return people;
     }
 
-    public String fileName;
+    public static String fileName;
 
-    public void loadFromFile(String inputFilename) {
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(Objects.requireNonNull(classLoader.getResource(inputFilename)).getFile());
-            Scanner in = new Scanner(file);
+    public TotalCount totalCount;
+
+    public void loadFromFile() {
+        FileUtils File = new FileUtils();
+
+        File.loadFromFile(fileName, in -> {
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 ArrayList<String> csvColumns = new ArrayList<>(Arrays.asList(line.split("~")));
-                String name = csvColumns.get(0);
-                String surname = csvColumns.get(1);
-                Person person  = new Person(name, surname);
+                int id = Integer.parseInt(csvColumns.get(0));
+                String name = csvColumns.get(1);
+                String surname = csvColumns.get(2);
+                Person person  = null;
+                try {
+                    person = new Person(id, name, surname);
+                } catch (ValidationException e) {
+                    throw new RuntimeException(e);
+                }
                 people.put(person.getId(), person);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            return null;
+        });
     }
 
     public void saveToFile() throws FileNotFoundException {
@@ -39,10 +49,11 @@ public class People {
         zapis.close();
     }
 
-    public People(String inputFilename) {
-        this.fileName = inputFilename;
+    public People(String fileName, String fileNameTotalCount) {
+        People.fileName = fileName;
+        totalCount = new TotalCount(fileNameTotalCount);
         try {
-            loadFromFile(inputFilename);
+            loadFromFile();
         } catch(Exception e) {
             throw new RuntimeException(e.getMessage());
         }

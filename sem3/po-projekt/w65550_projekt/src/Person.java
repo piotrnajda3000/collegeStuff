@@ -52,14 +52,14 @@ public class Person {
     }
 
     public String toCSV() {
-        return this.first + '~' + this.last;
+        return this.id + "~" + this.first + '~' + this.last;
     }
 
-    public Person(String first, String last) throws ValidationException  {
+    public Person(int id, String first, String last) throws ValidationException  {
         validateUserInput(first, last);
         this.first = first;
         this.last = last;
-        this.id = totalId++;
+        this.id = id;
     }
 
     public void PUT(String first, String last) throws ValidationException {

@@ -61,14 +61,14 @@ public class Project {
     }
 
     public String toCSV() {
-        return this.nazwa + '~' + this.opis;
+        return this.id + "~" + this.nazwa + '~' + this.opis;
     }
 
-    public Project(String nazwa, String opis) throws ValidationException  {
+    public Project(int id, String nazwa, String opis) throws ValidationException  {
         validateUserInput(nazwa, opis);
         this.nazwa = nazwa;
         this.opis = opis;
-        this.id = totalId++;
+        this.id = id;
     }
 
     public void PUT(String nazwa, String opis) throws ValidationException {
