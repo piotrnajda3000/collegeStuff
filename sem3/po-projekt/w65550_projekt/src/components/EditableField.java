@@ -10,7 +10,7 @@ public class EditableField {
 
     public <V> EditableField(String label, V value) {
         this.label = new JLabel(label);
-        this.input = new JTextField((String) value);
+        this.input = new JTextField((String) value, 20);
         field.add(this.label);
         field.add(this.input);
     }

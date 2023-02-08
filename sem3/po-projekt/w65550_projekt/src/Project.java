@@ -1,6 +1,8 @@
 import utils.validation.Validation;
 import utils.validation.ValidationException;
 
+import java.util.ArrayList;
+
 public class Project {
     static int totalId = 0;
     private String nazwa, opis;
@@ -40,6 +42,10 @@ public class Project {
     private void validateUserInput(String nazwa, String opis) throws ValidationException {
         Validation validation = new Validation();
 
+        if (nazwa.length() == 0) {
+            validation.messages.add("name is required");
+        }
+
         if (nazwa.length() > 30) {
             validation.messages.add("name can't be longer than 30 characters");
         }
@@ -55,7 +61,7 @@ public class Project {
     }
 
     public String toCSV() {
-        return this.nazwa + ',' + this.opis;
+        return this.nazwa + '~' + this.opis;
     }
 
     public Project(String nazwa, String opis) throws ValidationException  {
@@ -65,7 +71,7 @@ public class Project {
         this.id = totalId++;
     }
 
-    public void update(String nazwa, String opis) throws ValidationException {
+    public void PUT(String nazwa, String opis) throws ValidationException {
         validateUserInput(nazwa, opis);
         this.nazwa = nazwa;
         this.opis = opis;

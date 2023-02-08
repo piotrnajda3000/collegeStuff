@@ -3,11 +3,11 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class Projects {
-    private final HashMap<Integer, Project> projects = new HashMap<>();
+public class People {
+    HashMap<Integer, Person> people = new HashMap<>();
 
-    public HashMap<Integer, Project> getProjects() {
-        return projects;
+    public HashMap<Integer, Person> getPeople() {
+        return people;
     }
 
     public String fileName;
@@ -20,11 +20,11 @@ public class Projects {
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 ArrayList<String> csvColumns = new ArrayList<>(Arrays.asList(line.split("~")));
-                String nazwa = csvColumns.get(0);
-                String opis = csvColumns.get(1);
-                Project project  = new Project(nazwa, opis);
-                projects.put(project.getId(), project);
-                }
+                String name = csvColumns.get(0);
+                String surname = csvColumns.get(1);
+                Person person  = new Person(name, surname);
+                people.put(person.getId(), person);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -33,13 +33,13 @@ public class Projects {
     public void saveToFile() throws FileNotFoundException {
         PrintWriter zapis = new PrintWriter("src/" + fileName);
         zapis.print("");
-        projects.forEach((i, project) -> {
+        people.forEach((i, project) -> {
             zapis.println(project.toCSV());
         });
         zapis.close();
     }
 
-    public Projects(String inputFilename) {
+    public People(String inputFilename) {
         this.fileName = inputFilename;
         try {
             loadFromFile(inputFilename);
@@ -49,7 +49,7 @@ public class Projects {
     }
 
     public void DELETE(int id)  {
-        projects.remove(id);
+        people.remove(id);
         try {
             saveToFile();
         } catch (FileNotFoundException e) {
@@ -57,8 +57,8 @@ public class Projects {
         }
     }
 
-    public void PUT(Project p) {
-        projects.put(p.getId(), p);
+    public void PUT(Person person) {
+        people.put(person.getId(), person);
         try {
             saveToFile();
         } catch (FileNotFoundException e) {

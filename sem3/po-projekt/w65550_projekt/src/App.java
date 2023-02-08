@@ -3,74 +3,218 @@ import utils.validation.ValidationException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class App extends JFrame {
     private JTabbedPane nav;
     private JPanel rootPanel;
-    private JPanel peopleView;
-    private JPanel projectsView;
+    private JPanel PeopleView;
+    private JPanel ProjectsView;
 
     Projects projects = new Projects("projekty.csv");
+    People people = new People("ludzie.csv");
 
-    public void loadProjects() {
-        projectsView.removeAll();
-        projects.projects.forEach((i, p) -> {
-            JPanel projekt = new JPanel();
-            JPanel inner = new JPanel();
-            JLabel id = new JLabel("Projekt #" +p.getId());
-            JLabel nazwa = new JLabel("Nazwa: " + p.getNazwa());
-            JLabel opis = new JLabel("Opis: " + p.getOpis());
-            JLabel validationMsg = new JLabel(p.validation.getMessage());
-            JButton delete = new JButton("X");
-            JButton edit = new JButton("Edit");
+    static final int preferredWidth = 585;
 
-            projekt.setPreferredSize(new Dimension(585, 160));
-            projekt.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-            projekt.setLayout(new GridLayout(5, 1, 1, 1));
-            inner.setLayout(new FlowLayout());
+    public void renderPeopleView() {
+        PeopleView.removeAll();
+        people.getPeople().forEach((idx, person) -> {
+            JPanel Item = new JPanel();
+            JPanel Inner = new JPanel();
+            JLabel Id = new JLabel("Person #" + person.getId());
+            JLabel First = new JLabel("First name: " + person.getFirst());
+            JLabel Last = new JLabel("Last name: " + person.getLast());
+            JLabel ValidationMsg = new JLabel(person.validation.getMessage());
+            JButton Delete = new JButton("Delete");
+            JButton Edit = new JButton(person.getEditMode() ? "Confirm" : "Edit");
 
-            EditableField nazwaEditable = new EditableField("Nazwa:", p.getNazwa());
-            EditableField opisEditable = new EditableField("Opis:", p.getOpis());
+            Item.setPreferredSize(new Dimension(preferredWidth, 160));
+            Item.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+            Item.setLayout(new GridLayout(5, 1, 1, 1));
+            Inner.setLayout(new FlowLayout());
 
-            projekt.add(id);
+            EditableField FirstEditable = new EditableField("First name:", person.getFirst());
+            EditableField LastEditable = new EditableField("Last name:", person.getLast());
 
-            if (!p.getEditMode()) {
-                projekt.add(nazwa);
-                projekt.add(opis);
+            Item.add(Id);
+            if (!person.getEditMode()) {
+                Item.add(First);
+                Item.add(Last);
             } else {
-                projekt.add(nazwaEditable.field);
-                projekt.add(opisEditable.field);
+                Item.add(FirstEditable.field);
+                Item.add(LastEditable.field);
             }
+            Item.add(Inner);
+            Inner.add(Delete);
+            Inner.add(Edit);
+            Item.add(ValidationMsg);
+            PeopleView.add(Item);
 
-            projekt.add(inner);
-            inner.add(delete);
-            inner.add(edit);
-            projekt.add(validationMsg);
-            projectsView.add(projekt);
-
-            delete.addActionListener(e -> {
-                projects.delete(p.getId());
-                projectsView.remove(projekt);
-                components.Utils.refresh(projectsView);
+            Delete.addActionListener(e -> {
+                people.DELETE(person.getId());
+                PeopleView.remove(Item);
+                components.Utils.refresh(PeopleView);
             });
-            edit.addActionListener(e -> {
-                System.out.println(nazwaEditable.input.getText());
-                if (p.getEditMode()) {
-                    try {
-                        p.update(nazwaEditable.input.getText(), opisEditable.input.getText());
-                        projects.update(p);
-                    } catch (ValidationException ex) {
-                        validationMsg.setText(ex.getMessage());
+            Edit.addActionListener(e -> {
+                Map<Integer, Person> inEditMode = people.getPeople().entrySet().stream().filter(p -> p.getValue().getEditMode())
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+                for (Integer i : inEditMode.keySet()) {
+                    if (i != person.getId()) {
+                        ValidationMsg.setText("Please finish editing previous person.");
                         return;
                     }
                 }
-                p.toggleEditMode();
-                loadProjects();
-                components.Utils.refresh(projekt);
+
+                if (person.getEditMode()) {
+                    try {
+                        person.PUT(FirstEditable.input.getText(), LastEditable.input.getText());
+                        people.PUT(person);
+                    } catch (ValidationException ex) {
+                        ValidationMsg.setText(ex.getMessage());
+                        return;
+                    }
+                }
+                person.toggleEditMode();
+                renderPeopleView();
             });
-            components.Utils.refresh(projectsView);
+        });
+        renderPeopleNewForm();
+    }
+
+    public void renderProjectsView() {
+        ProjectsView.removeAll();
+        projects.getProjects().forEach((idx, project) -> {
+            JPanel Item = new JPanel();
+            JPanel Inner = new JPanel();
+            JLabel Id = new JLabel("Project #" + project.getId());
+            JLabel Nazwa = new JLabel("Name: " + project.getNazwa());
+            JLabel Opis = new JLabel("Description: " + project.getOpis());
+            JLabel ValidationMsg = new JLabel(project.validation.getMessage());
+            JButton Delete = new JButton("Delete");
+            JButton Edit = new JButton(project.getEditMode() ? "Confirm" : "Edit");
+
+            Item.setPreferredSize(new Dimension(preferredWidth, 160));
+            Item.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+            Item.setLayout(new GridLayout(5, 1, 1, 1));
+            Inner.setLayout(new FlowLayout());
+
+            EditableField NazwaEditable = new EditableField("Name:", project.getNazwa());
+            EditableField OpisEditable = new EditableField("Description:", project.getOpis());
+
+            Item.add(Id);
+            if (!project.getEditMode()) {
+                Item.add(Nazwa);
+                Item.add(Opis);
+            } else {
+                Item.add(NazwaEditable.field);
+                Item.add(OpisEditable.field);
+            }
+            Item.add(Inner);
+            Inner.add(Delete);
+            Inner.add(Edit);
+            Item.add(ValidationMsg);
+            ProjectsView.add(Item);
+
+            Delete.addActionListener(e -> {
+                projects.DELETE(project.getId());
+                ProjectsView.remove(Item);
+                components.Utils.refresh(ProjectsView);
+            });
+            Edit.addActionListener(e -> {
+                Map<Integer, Project> inEditMode = projects.getProjects().entrySet().stream().filter(p -> p.getValue().getEditMode())
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+                for (Integer i : inEditMode.keySet()) {
+                    if (i != project.getId()) {
+                        ValidationMsg.setText("Please finish editing previous project.");
+                        return;
+                    }
+                }
+
+                if (project.getEditMode()) {
+                    try {
+                        project.PUT(NazwaEditable.input.getText(), OpisEditable.input.getText());
+                        projects.PUT(project);
+                    } catch (ValidationException ex) {
+                        ValidationMsg.setText(ex.getMessage());
+                        return;
+                    }
+                }
+                project.toggleEditMode();
+                renderProjectsView();
+            });
+        });
+        renderProjectsNewForm();
+    }
+
+    public void renderPeopleNewForm() {
+        JLabel ValidationMsg = new JLabel("");
+        JPanel NewItem = new JPanel();
+        JButton NewItemButton = new JButton("Dodaj");
+        JLabel NewItemLabel = new JLabel("Stwórz nową osobę");
+        JPanel FieldsWrapper = new JPanel();
+        EditableField First = new EditableField("Imie:", "");
+        EditableField Last = new EditableField("Nazwisko:", "");
+
+        FieldsWrapper.setLayout(new GridLayout(2, 1, 1, 1));
+        NewItem.setLayout(new GridLayout(4, 1, 1, 1));
+        NewItem.setPreferredSize(new Dimension(preferredWidth, 200));
+
+        FieldsWrapper.add(First.field);
+        FieldsWrapper.add(Last.field);
+        NewItem.add(NewItemLabel);
+        NewItem.add(FieldsWrapper);
+        NewItem.add(NewItemButton);
+        NewItem.add(ValidationMsg);
+        PeopleView.add(NewItem);
+
+        NewItemButton.addActionListener(e -> {
+            try {
+                Person newItem = new Person(First.input.getText(), Last.input.getText());
+                people.PUT(newItem);
+                renderPeopleView();
+            } catch (ValidationException ex) {
+                ValidationMsg.setText(ex.getMessage());
+                return;
+            }
+        });
+    }
+
+    public void renderProjectsNewForm() {
+        JLabel ValidationMsg = new JLabel("");
+        JPanel NewItem = new JPanel();
+        JButton NewItemButton = new JButton("Dodaj");
+        JLabel NewItemLabel = new JLabel("Stwórz nowy projekt");
+        JPanel FieldsWrapper = new JPanel();
+        EditableField OpisNew = new EditableField("Opis:", "");
+        EditableField NazwaNew = new EditableField("Nazwa:", "");
+
+        FieldsWrapper.setLayout(new GridLayout(2, 1, 1, 1));
+        NewItem.setLayout(new GridLayout(4, 1, 1, 1));
+        NewItem.setPreferredSize(new Dimension(preferredWidth, 200));
+
+        FieldsWrapper.add(OpisNew.field);
+        FieldsWrapper.add(NazwaNew.field);
+        NewItem.add(NewItemLabel);
+        NewItem.add(FieldsWrapper);
+        NewItem.add(NewItemButton);
+        NewItem.add(ValidationMsg);
+        ProjectsView.add(NewItem);
+
+        NewItemButton.addActionListener(e -> {
+            try {
+                Project newItem = new Project(NazwaNew.input.getText(), OpisNew.input.getText());
+                projects.PUT(newItem);
+                renderProjectsView();
+            } catch (ValidationException ex) {
+                ValidationMsg.setText(ex.getMessage());
+                return;
+            }
         });
     }
 
@@ -81,12 +225,17 @@ public class App extends JFrame {
 
     App() {
         super("CRM");
-        this.setSize(600, 600);
+        this.setMinimumSize(new Dimension(600, 700));
         this.setContentPane(this.rootPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        renderPeopleView();
+        renderProjectsView();
         nav.addChangeListener(e -> {
-            if (nav.getSelectedIndex() == 1) {
-                loadProjects();
+            switch (nav.getSelectedIndex()) {
+                case 0:
+                    renderPeopleView();
+                case 1:
+                    renderProjectsView();
             }
         });
     }
