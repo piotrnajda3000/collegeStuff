@@ -3,8 +3,7 @@ package utils;
 import java.io.PrintWriter;
 
 public class TotalCount {
-
-    private String fileName;
+    private final String fileName;
     private  int get() {
         var ref = new Object() {
             int totalId = 0;

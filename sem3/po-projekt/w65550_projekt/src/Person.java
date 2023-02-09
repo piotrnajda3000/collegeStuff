@@ -1,23 +1,14 @@
 import utils.validation.Validation;
 import utils.validation.ValidationException;
 
-import java.util.ArrayList;
-
 public class Person {
-    static int totalId = 0;
     private String first, last;
     private final int id;
 
     private Boolean editMode = false;
 
-    ArrayList<Project> projects = new ArrayList<>();
-
     public void toggleEditMode() {
         editMode = !editMode;
-    }
-
-    public String getFullName() {
-        return first + " " + last;
     }
 
     public String getFirst() {

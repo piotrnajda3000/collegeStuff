@@ -1,7 +1,6 @@
 import utils.FileUtils;
 import utils.TotalCount;
 import utils.validation.ValidationException;
-
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -19,7 +18,6 @@ public class Projects {
 
     public void loadFromFile() {
         FileUtils File = new FileUtils();
-
         File.loadFromFile(fileName, in -> {
             while (in.hasNextLine()) {
                 String line = in.nextLine();

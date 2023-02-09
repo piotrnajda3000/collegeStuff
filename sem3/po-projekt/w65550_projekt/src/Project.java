@@ -1,10 +1,7 @@
 import utils.validation.Validation;
 import utils.validation.ValidationException;
 
-import java.util.ArrayList;
-
 public class Project {
-    static int totalId = 0;
     private String nazwa, opis;
     private final int id;
 
@@ -27,16 +24,8 @@ public class Project {
         return nazwa;
     }
 
-    public void setNazwa(String nazwa) {
-        this.nazwa = nazwa;
-    }
-
     public String getOpis() {
         return opis;
-    }
-
-    public void setOpis(String opis) {
-        this.opis = opis;
     }
 
     private void validateUserInput(String nazwa, String opis) throws ValidationException {

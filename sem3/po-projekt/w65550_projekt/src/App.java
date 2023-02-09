@@ -23,6 +23,7 @@ public class App extends JFrame {
     public void renderPeopleView() {
         PeopleView.removeAll();
         people.getPeople().forEach((idx, person) -> {
+            // Create components
             JPanel Item = new JPanel();
             JPanel Inner = new JPanel();
             JLabel Id = new JLabel("Person #" + person.getId());
@@ -31,15 +32,16 @@ public class App extends JFrame {
             JLabel ValidationMsg = new JLabel(person.validation.getMessage());
             JButton Delete = new JButton("Delete");
             JButton Edit = new JButton(person.getEditMode() ? "Confirm" : "Edit");
+            EditableField FirstEditable = new EditableField("First name:", person.getFirst());
+            EditableField LastEditable = new EditableField("Last name:", person.getLast());
 
+            // Configure components
             Item.setPreferredSize(new Dimension(preferredWidth, 160));
             Item.setBorder(BorderFactory.createLineBorder(Color.GREEN));
             Item.setLayout(new GridLayout(5, 1, 1, 1));
             Inner.setLayout(new FlowLayout());
 
-            EditableField FirstEditable = new EditableField("First name:", person.getFirst());
-            EditableField LastEditable = new EditableField("Last name:", person.getLast());
-
+            // Add components to view
             Item.add(Id);
             if (!person.getEditMode()) {
                 Item.add(First);
@@ -60,16 +62,16 @@ public class App extends JFrame {
                 components.Utils.refresh(PeopleView);
             });
             Edit.addActionListener(e -> {
+                // "Please finish editing previous person" check.
                 Map<Integer, Person> inEditMode = people.getPeople().entrySet().stream().filter(p -> p.getValue().getEditMode())
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
                 for (Integer i : inEditMode.keySet()) {
                     if (i != person.getId()) {
                         ValidationMsg.setText("Please finish editing previous person.");
                         return;
                     }
                 }
-
+                // Edit the person data if Confirming an edit.
                 if (person.getEditMode()) {
                     try {
                         person.PUT(FirstEditable.input.getText(), LastEditable.input.getText());
@@ -79,6 +81,7 @@ public class App extends JFrame {
                         return;
                     }
                 }
+                // Switch edit mode and rerender view.
                 person.toggleEditMode();
                 renderPeopleView();
             });
@@ -89,6 +92,7 @@ public class App extends JFrame {
     public void renderProjectsView() {
         ProjectsView.removeAll();
         projects.getProjects().forEach((idx, project) -> {
+            // Create components
             JPanel Item = new JPanel();
             JPanel Inner = new JPanel();
             JLabel Id = new JLabel("Project #" + project.getId());
@@ -97,15 +101,16 @@ public class App extends JFrame {
             JLabel ValidationMsg = new JLabel(project.validation.getMessage());
             JButton Delete = new JButton("Delete");
             JButton Edit = new JButton(project.getEditMode() ? "Confirm" : "Edit");
+            EditableField NazwaEditable = new EditableField("Name:", project.getNazwa());
+            EditableField OpisEditable = new EditableField("Description:", project.getOpis());
 
+            // Configure components
             Item.setPreferredSize(new Dimension(preferredWidth, 160));
             Item.setBorder(BorderFactory.createLineBorder(Color.BLUE));
             Item.setLayout(new GridLayout(5, 1, 1, 1));
             Inner.setLayout(new FlowLayout());
 
-            EditableField NazwaEditable = new EditableField("Name:", project.getNazwa());
-            EditableField OpisEditable = new EditableField("Description:", project.getOpis());
-
+            // Add components to view
             Item.add(Id);
             if (!project.getEditMode()) {
                 Item.add(Nazwa);
@@ -126,16 +131,16 @@ public class App extends JFrame {
                 components.Utils.refresh(ProjectsView);
             });
             Edit.addActionListener(e -> {
+                // "Please finish editing previous project" check.
                 Map<Integer, Project> inEditMode = projects.getProjects().entrySet().stream().filter(p -> p.getValue().getEditMode())
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
                 for (Integer i : inEditMode.keySet()) {
                     if (i != project.getId()) {
                         ValidationMsg.setText("Please finish editing previous project.");
                         return;
                     }
                 }
-
+                // Edit the project data if Confirming an edit.
                 if (project.getEditMode()) {
                     try {
                         project.PUT(NazwaEditable.input.getText(), OpisEditable.input.getText());
@@ -145,6 +150,7 @@ public class App extends JFrame {
                         return;
                     }
                 }
+                // Switch edit mode and rerender view.
                 project.toggleEditMode();
                 renderProjectsView();
             });
@@ -153,6 +159,7 @@ public class App extends JFrame {
     }
 
     public void renderPeopleNewForm() {
+        // Create components
         JLabel ValidationMsg = new JLabel("");
         JPanel NewItem = new JPanel();
         JButton NewItemButton = new JButton("Dodaj");
@@ -161,10 +168,12 @@ public class App extends JFrame {
         EditableField First = new EditableField("Imie:", "");
         EditableField Last = new EditableField("Nazwisko:", "");
 
+        // Configure components
         FieldsWrapper.setLayout(new GridLayout(2, 1, 1, 1));
         NewItem.setLayout(new GridLayout(4, 1, 1, 1));
         NewItem.setPreferredSize(new Dimension(preferredWidth, 200));
 
+        // Add components to view
         FieldsWrapper.add(First.field);
         FieldsWrapper.add(Last.field);
         NewItem.add(NewItemLabel);
@@ -174,6 +183,7 @@ public class App extends JFrame {
         PeopleView.add(NewItem);
 
         NewItemButton.addActionListener(e -> {
+            // Try to create a new item, if failed, display validation message.
             try {
                 Person newItem = new Person(people.totalCount.increment(), First.input.getText(), Last.input.getText());
                 people.PUT(newItem);
@@ -186,6 +196,7 @@ public class App extends JFrame {
     }
 
     public void renderProjectsNewForm() {
+        // Create components
         JLabel ValidationMsg = new JLabel("");
         JPanel NewItem = new JPanel();
         JButton NewItemButton = new JButton("Dodaj");
@@ -194,10 +205,12 @@ public class App extends JFrame {
         EditableField OpisNew = new EditableField("Opis:", "");
         EditableField NazwaNew = new EditableField("Nazwa:", "");
 
+        // Configure components
         FieldsWrapper.setLayout(new GridLayout(2, 1, 1, 1));
         NewItem.setLayout(new GridLayout(4, 1, 1, 1));
         NewItem.setPreferredSize(new Dimension(preferredWidth, 200));
 
+        // Add components to view
         FieldsWrapper.add(OpisNew.field);
         FieldsWrapper.add(NazwaNew.field);
         NewItem.add(NewItemLabel);
@@ -206,6 +219,7 @@ public class App extends JFrame {
         NewItem.add(ValidationMsg);
         ProjectsView.add(NewItem);
 
+        // Try to create a new item, if failed, display validation message.
         NewItemButton.addActionListener(e -> {
             try {
                 Project newItem = new Project(projects.totalCount.increment(), NazwaNew.input.getText(), OpisNew.input.getText());
