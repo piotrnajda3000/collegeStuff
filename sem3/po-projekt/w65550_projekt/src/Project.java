@@ -46,6 +46,10 @@ public class Project {
             validation.messages.add("name is required");
         }
 
+        if (opis.length() == 0) {
+            validation.messages.add("description is required.");
+        }
+
         if (nazwa.length() > 30) {
             validation.messages.add("name can't be longer than 30 characters");
         }
