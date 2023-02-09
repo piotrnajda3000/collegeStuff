@@ -239,7 +239,7 @@ public class App extends JFrame {
 
     App() {
         super("CRM");
-        this.setMinimumSize(new Dimension(600, 700));
+        this.setMinimumSize(new Dimension(1024, 700));
         this.setContentPane(this.rootPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         renderPeopleView();

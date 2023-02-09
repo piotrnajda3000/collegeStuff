@@ -36,7 +36,7 @@ public class Project {
         }
 
         if (opis.length() == 0) {
-            validation.messages.add("description is required.");
+            validation.messages.add("description is required");
         }
 
         if (nazwa.length() > 30) {

@@ -35,6 +35,14 @@ public class Person {
             validation.messages.add("full name is required");
         }
 
+        if (first.length() > 30) {
+            validation.messages.add("first name can't be longer than 30 characters");
+        }
+
+        if (last.length() > 30) {
+            validation.messages.add("last name can't be longer than 30 characters");
+        }
+
         try {
             validation.validate();
         } catch (ValidationException e) {

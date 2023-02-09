@@ -9,8 +9,6 @@ public class TotalCount {
             int totalId = 0;
         };
         FileUtils File = new FileUtils();
-
-
         File.loadFromFile(fileName, in -> {
             while (in.hasNextLine()) {
                 ref.totalId = Integer.parseInt(in.nextLine());
@@ -20,7 +18,6 @@ public class TotalCount {
 
         return ref.totalId;
     }
-
     public int increment() {
         int oldTotal = get();
         int newTotal = oldTotal + 1;
@@ -33,7 +30,6 @@ public class TotalCount {
         }
         return newTotal;
     }
-
     public TotalCount(String fileName) {
         this.fileName = fileName;
     }

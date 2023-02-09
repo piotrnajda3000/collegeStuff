@@ -2,6 +2,12 @@ package utils.validation;
 import utils.Utils;
 import java.util.ArrayList;
 
+/**
+ * 1. Create new instance
+ * 2. Add validation messages based on conditions
+ * 3. Use validate method to see if inputs are correct
+ * Example usage in Person and Project classes
+ */
 public class Validation {
     public ArrayList<String> messages = new ArrayList<>();
     private String message = "";
